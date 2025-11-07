@@ -35,24 +35,19 @@ except:
 
 
 def set_servo_angle(angle):
-    duty = int((angle / 180) * 8000 + 1000)
+    #duty = int((angle / 180) * 8000 + 1000)
+    duty_min= 2000
+    duty_max= 8500
+    duty = int(duty_min +(angle/180) * (duty_max - duty_min))
     servo.duty_u16(duty)
 
 
-timezone_offset = 1 * 3600
-last_minute = -1  
 
-while True:
-    t = time.localtime(time.time() + timezone_offset)
-    hour = t[3] % 12
-    min = t[4]
-
-    # Mise à du servo lorsque la minute change
-    if min != last_minute:
-        last_minute = min
-        
-        #angle du servo moteur
-        angle = hour * 15 + min * 0.25
-        set_servo_angle(angle)
-        print(f"Il est  {t[3]:02d}:{min:02d}  ce qui correspond à cette mesure d'angle{angle:.2f}")
-    time.sleep(1) 
+for h in range(13):
+    angle = (12 - h) * (180 / 12) # Inversion du sens
+    if angle == 180:
+        angle = 0 # Pour que 12h = 0°
+    print(f"Heure simulee: {h}h a angle {angle} degre")
+    set_servo_angle(angle)
+    time.sleep(1)
+   
